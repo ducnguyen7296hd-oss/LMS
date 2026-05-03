@@ -423,7 +423,7 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
         }
 
         setQuizActiveTab(startPart);
-        setQuizActiveQ(1);
+        setQuizActiveQ(0);
         setQuizTimeLeft(duration);
         setState('QUIZ');
     };
@@ -797,119 +797,138 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                 </div>
 
                                 {/* Cấu hình điểm */}
-                                <div className="mb-10">
-                                    <h3 className="font-bold text-slate-800 text-base mb-4 flex items-center gap-2"><span className="w-1.5 h-4 bg-indigo-600 rounded-full"></span> Cấu hình điểm</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-5">
-                                        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-indigo-300 transition-colors">
-                                            <div className="absolute top-0 left-0 w-1 h-full bg-indigo-400"></div>
-                                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-1">Phần I</label>
-                                            <span className="text-xs text-indigo-600 font-bold block mb-3 opacity-90">Điểm cho mỗi câu đúng</span>
-                                            <div className="flex items-center gap-2">
-                                                <input type="number" step="0.05" value={currentExam.part1Points} onChange={e => updateExamField(currentExam.internalId, 'part1Points', Number(e.target.value))} className="border-none w-full font-black text-3xl text-slate-800 outline-none group-focus-within:text-indigo-600 transition-colors bg-transparent" />
-                                                <span className="text-slate-400 font-bold text-lg">đ</span>
-                                            </div>
-                                        </div>
-                                        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-indigo-300 transition-colors">
-                                            <div className="absolute top-0 left-0 w-1 h-full bg-indigo-400"></div>
-                                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-1">Phần II (Đúng/Sai)</label>
-                                            <span className="text-xs text-indigo-600 font-bold block mb-3 opacity-90">Điểm tối đa cho 1 câu</span>
-                                            <div className="flex items-center gap-2">
-                                                <input type="number" step="0.05" value={currentExam.part2Points} onChange={e => updateExamField(currentExam.internalId, 'part2Points', Number(e.target.value))} className="border-none w-full font-black text-3xl text-slate-800 outline-none group-focus-within:text-indigo-600 transition-colors bg-transparent" />
-                                                <span className="text-slate-400 font-bold text-lg">đ</span>
-                                            </div>
-                                        </div>
-                                        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-indigo-300 transition-colors">
-                                            <div className="absolute top-0 left-0 w-1 h-full bg-indigo-400"></div>
-                                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-1">Phần III (Số)</label>
-                                            <span className="text-xs text-indigo-600 font-bold block mb-3 opacity-90">Điểm cho mỗi câu đúng</span>
-                                            <div className="flex items-center gap-2">
-                                                <input type="number" step="0.05" value={currentExam.part3Points} onChange={e => updateExamField(currentExam.internalId, 'part3Points', Number(e.target.value))} className="border-none w-full font-black text-3xl text-slate-800 outline-none group-focus-within:text-indigo-600 transition-colors bg-transparent" />
-                                                <span className="text-slate-400 font-bold text-lg">đ</span>
-                                            </div>
-                                        </div>
+                                {/* Cấu hình điểm */}
+                                <div className="mb-6 flex flex-wrap items-center gap-4 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                                    <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                                        <span className="text-[11px] font-bold text-slate-500 uppercase">Phần I:</span>
+                                        <input type="number" step="0.05" value={currentExam.part1Points} onChange={e => updateExamField(currentExam.internalId, 'part1Points', Number(e.target.value))} className="w-14 border border-slate-300 rounded p-1 text-center font-bold text-indigo-700 outline-none text-sm" title="Điểm cho mỗi câu đúng" />
+                                        <span className="text-xs text-slate-400 font-bold">đ</span>
                                     </div>
-
-                                    <div className="bg-indigo-50/50 border-l-4 border-indigo-600 p-5 rounded-r-xl text-sm text-indigo-900 shadow-sm">
-                                        <p className="font-bold mb-2">Ghi chú cách tính điểm:</p>
-                                        <ul className="list-disc pl-5 space-y-1.5 opacity-90">
-                                            <li><strong>Phần I & III:</strong> Điểm nhập là điểm cho <strong>mỗi câu trả lời đúng</strong>.</li>
-                                            <li><strong>Phần II (Đ/S):</strong> Điểm nhập là điểm <strong>tối đa</strong> cho một câu (khi đúng cả 4 ý). Hệ thống sẽ tự động tính điểm theo từng nấc: đúng 1 ý (10%), 2 ý (25%), 3 ý (50%), 4 ý (100%).</li>
-                                        </ul>
+                                    <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                                        <span className="text-[11px] font-bold text-slate-500 uppercase">Phần II (Tối đa/câu):</span>
+                                        <input type="number" step="0.05" value={currentExam.part2Points} onChange={e => updateExamField(currentExam.internalId, 'part2Points', Number(e.target.value))} className="w-14 border border-slate-300 rounded p-1 text-center font-bold text-indigo-700 outline-none text-sm" />
+                                        <span className="text-xs text-slate-400 font-bold">đ</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                                        <span className="text-[11px] font-bold text-slate-500 uppercase">Phần III:</span>
+                                        <input type="number" step="0.05" value={currentExam.part3Points} onChange={e => updateExamField(currentExam.internalId, 'part3Points', Number(e.target.value))} className="w-14 border border-slate-300 rounded p-1 text-center font-bold text-indigo-700 outline-none text-sm" />
+                                        <span className="text-xs text-slate-400 font-bold">đ</span>
+                                    </div>
+                                    
+                                    <div className="ml-auto flex items-center gap-3">
+                                        <details className="relative text-sm text-slate-500 cursor-pointer group">
+                                            <summary className="font-bold flex items-center gap-1 hover:text-indigo-600 outline-none select-none">
+                                                <span className="material-symbols-outlined text-[18px]">info</span> Hướng dẫn
+                                            </summary>
+                                            <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-slate-200 shadow-xl p-4 rounded-xl z-50 text-xs text-slate-700">
+                                                <ul className="list-disc pl-4 space-y-1.5">
+                                                    <li><strong>Phần I & III:</strong> Điểm nhập là cho <strong>mỗi câu đúng</strong>.</li>
+                                                    <li><strong>Phần II (Đ/S):</strong> Điểm nhập là <strong>tối đa</strong>/câu. Tự động chia: đúng 1 ý (10%), 2 ý (25%), 3 ý (50%), 4 ý (100%).</li>
+                                                </ul>
+                                            </div>
+                                        </details>
+                                        <div className="bg-indigo-50 text-indigo-800 font-bold px-3 py-1.5 rounded-lg border border-indigo-200 text-sm flex items-center gap-2 shadow-sm">
+                                            Tổng: <span className="text-lg">{Number((currentExam.part1Count * currentExam.part1Points + currentExam.part2Count * currentExam.part2Points + currentExam.part3Count * currentExam.part3Points + (Array.from({ length: currentExam.part4Count }).reduce((sum: number, _, idx) => sum + (activeVersion?.answerKey?.part4?.[idx + 1] !== undefined ? Number(activeVersion.answerKey.part4[idx + 1]) : 1.0), 0) as number)).toFixed(2))}</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 {/* ================= TAB CONTENTS ================= */}
                                 {activeTab === 'p1' && (
-                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-8 gap-x-4 bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
-                                        {Array.from({ length: currentExam.part1Count }).map((_, idx) => {
-                                            const qNum = idx + 1;
-                                            const selected = activeVersion?.answerKey.part1[qNum];
-                                            return (
-                                                <div key={`p1-${qNum}`} className="flex flex-col">
-                                                    <div className="text-slate-500 font-bold text-sm mb-2.5 ml-1">{String(qNum).padStart(2, '0')}</div>
-                                                    <div className="flex gap-2">
-                                                        {['A', 'B', 'C', 'D'].map(opt => renderOptBtn(selected === opt, opt, () => updateKey('part1', qNum, null, opt)))}
+                                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                                        <div className="mb-5 flex items-center gap-3 bg-indigo-50 p-2.5 rounded-lg border border-indigo-100 shadow-inner">
+                                            <span className="material-symbols-outlined text-indigo-600 ml-1">keyboard</span>
+                                            <span className="text-[13px] font-bold text-indigo-900 whitespace-nowrap">Nhập nhanh:</span>
+                                            <input 
+                                                type="text" 
+                                                placeholder="VD gõ: ABCDABCD..." 
+                                                className="flex-1 border border-indigo-200 rounded-md px-3 py-1.5 outline-none focus:border-indigo-500 font-mono tracking-[0.25em] uppercase text-sm font-bold text-slate-800 bg-white"
+                                                onChange={(e) => {
+                                                    const clean = e.target.value.toUpperCase().replace(/[^A-D]/g, '');
+                                                    const newPart1 = { ...activeVersion?.answerKey.part1 };
+                                                    for (let i = 0; i < currentExam.part1Count; i++) {
+                                                        if (clean[i]) newPart1[i + 1] = clean[i];
+                                                        else delete newPart1[i + 1];
+                                                    }
+                                                    const newKey = { ...activeVersion?.answerKey, part1: newPart1 };
+                                                    setExams(prev => prev.map(ex => ex.internalId === currentExamId ? { ...ex, versions: ex.versions.map(v => v.id === activeVersion?.id ? { ...v, answerKey: newKey as AnswerKey } : v) } : ex));
+                                                }}
+                                                value={Array.from({length: currentExam.part1Count}).map((_, i) => activeVersion?.answerKey.part1[i+1] || '').join('')}
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-6">
+                                            {Array.from({ length: currentExam.part1Count }).map((_, idx) => {
+                                                const qNum = idx + 1;
+                                                const selected = activeVersion?.answerKey.part1[qNum];
+                                                return (
+                                                    <div key={`p1-${qNum}`} className={`flex items-center gap-3 bg-white px-2 py-2 rounded-xl border-2 transition-all ${selected ? 'border-indigo-400 shadow-md bg-indigo-50/40' : 'border-slate-100 shadow-sm hover:border-indigo-200 hover:shadow-md'}`}>
+                                                        <div className={`flex flex-col items-center justify-center shrink-0 w-10 border-r-2 pr-1 ${selected ? 'border-indigo-200 text-indigo-700' : 'border-slate-100 text-slate-500'}`}>
+                                                            <span className="text-[9px] uppercase font-bold tracking-widest opacity-60 mb-0.5">Câu</span>
+                                                            <span className="text-[15px] font-black leading-none">{qNum}</span>
+                                                        </div>
+                                                        <div className="flex gap-1.5 pl-1">
+                                                            {['A', 'B', 'C', 'D'].map(opt => (
+                                                                <button
+                                                                    key={opt}
+                                                                    onClick={() => updateKey('part1', qNum, null, opt)}
+                                                                    className={`w-7 h-7 rounded-full font-black text-[12px] flex items-center justify-center transition-all border-2 ${selected === opt ? 'bg-indigo-600 text-white border-indigo-600 shadow-md scale-110' : 'bg-white text-slate-600 hover:bg-indigo-50 border-slate-300 hover:border-indigo-400 hover:text-indigo-600'}`}
+                                                                >
+                                                                    {opt}
+                                                                </button>
+                                                            ))}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            )
-                                        })}
+                                                )
+                                            })}
+                                        </div>
                                     </div>
                                 )}
 
                                 {activeTab === 'p2' && (
-                                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-                                        <table className="w-full text-center">
-                                            <thead className="bg-slate-50 border-b border-slate-200">
-                                                <tr className="text-slate-500 text-[11px] tracking-widest font-black">
-                                                    <th className="py-4 px-6 text-left w-24 uppercase text-[10px]">Câu</th>
-                                                    <th className="py-4 w-[18%] text-sm">a</th>
-                                                    <th className="py-4 w-[18%] text-sm">b</th>
-                                                    <th className="py-4 w-[18%] text-sm">c</th>
-                                                    <th className="py-4 w-[18%] text-sm">d</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-slate-100">
-                                                {Array.from({ length: currentExam.part2Count }).map((_, idx) => {
-                                                    const qNum = idx + 1;
-                                                    const keyObj = activeVersion?.answerKey.part2[qNum] || {};
-                                                    return (
-                                                        <tr key={`p2-${qNum}`} className="hover:bg-slate-50/50 transition-colors group">
-                                                            <td className="py-5 px-6 text-left font-black text-slate-800 text-lg">
-                                                                <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-sm group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">{qNum}</div>
-                                                            </td>
+                                    <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                                            {Array.from({ length: currentExam.part2Count }).map((_, idx) => {
+                                                const qNum = idx + 1;
+                                                const keyObj = activeVersion?.answerKey.part2[qNum] || {};
+                                                return (
+                                                    <div key={`p2-${qNum}`} className={`flex items-center gap-4 bg-white p-3 rounded-xl border-2 transition-all shadow-sm hover:shadow-md ${keyObj['a'] !== undefined || keyObj['b'] !== undefined || keyObj['c'] !== undefined || keyObj['d'] !== undefined ? 'border-indigo-400 bg-indigo-50/40' : 'border-slate-100 hover:border-indigo-200'}`}>
+                                                        <div className={`w-11 h-11 rounded-xl flex flex-col items-center justify-center font-black shrink-0 border-2 transition-colors ${keyObj['a'] !== undefined || keyObj['b'] !== undefined || keyObj['c'] !== undefined || keyObj['d'] !== undefined ? 'bg-indigo-500 text-white border-indigo-600 shadow-inner' : 'bg-slate-50 text-slate-400 border-slate-200'}`}>
+                                                            <span className="text-[8px] uppercase tracking-widest opacity-90 leading-none mb-0.5">Câu</span>
+                                                            <span className="text-[15px] leading-none">{qNum}</span>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-y-3 gap-x-6 flex-1">
                                                             {(['a', 'b', 'c', 'd'] as const).map(sub => {
                                                                 const isTrue = keyObj[sub] === true;
                                                                 const isFalse = keyObj[sub] === false;
                                                                 return (
-                                                                    <td key={sub} className="py-5">
-                                                                        <div className="flex justify-center gap-2">
-                                                                            <button onClick={() => updateKey('part2', qNum, sub, true)} className={`w-10 h-10 rounded-lg font-bold text-sm transition-all shadow-sm border ${isTrue ? 'bg-indigo-600 text-white border-indigo-600 shadow-indigo-600/30 scale-105' : 'bg-white text-slate-400 hover:bg-indigo-50 border-slate-200 hover:border-indigo-200'}`}>Đ</button>
-                                                                            <button onClick={() => updateKey('part2', qNum, sub, false)} className={`w-10 h-10 rounded-lg font-bold text-sm transition-all shadow-sm border ${isFalse ? 'bg-indigo-600 text-white border-indigo-600 shadow-indigo-600/30 scale-105' : 'bg-white text-slate-400 hover:bg-slate-100 border-slate-200 hover:border-slate-300'}`}>S</button>
-                                                                        </div>
-                                                                    </td>
+                                                                    <div key={sub} className="flex items-center gap-1.5">
+                                                                        <span className="text-[11px] font-bold text-slate-500">{sub})</span>
+                                                                        <button onClick={() => updateKey('part2', qNum, sub, true)} className={`w-7 h-7 rounded-full text-[11px] font-bold border-2 transition-all ${isTrue ? 'bg-emerald-500 text-white border-emerald-500 shadow-md scale-110' : 'bg-white text-slate-600 border-slate-300 hover:border-emerald-400 hover:text-emerald-600 hover:bg-emerald-50'}`}>Đ</button>
+                                                                        <button onClick={() => updateKey('part2', qNum, sub, false)} className={`w-7 h-7 rounded-full text-[11px] font-bold border-2 transition-all ${isFalse ? 'bg-rose-500 text-white border-rose-500 shadow-md scale-110' : 'bg-white text-slate-600 border-slate-300 hover:border-rose-400 hover:text-rose-600 hover:bg-rose-50'}`}>S</button>
+                                                                    </div>
                                                                 )
                                                             })}
-                                                        </tr>
-                                                    )
-                                                })}
-                                            </tbody>
-                                        </table>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
                                     </div>
                                 )}
 
                                 {activeTab === 'p3' && (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                                         {Array.from({ length: currentExam.part3Count }).map((_, idx) => {
                                             const qNum = idx + 1;
                                             return (
-                                                <div key={`p3-${qNum}`}>
-                                                    <div className="text-slate-700 font-bold text-sm mb-2">Câu {qNum}</div>
+                                                <div key={`p3-${qNum}`} className="flex items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-100 hover:border-slate-300 transition-colors">
+                                                    <span className="text-slate-600 font-bold text-[13px] whitespace-nowrap w-12 shrink-0">Câu {qNum}</span>
                                                     <input
                                                         type="text"
                                                         value={activeVersion?.answerKey.part3[qNum] || ''}
                                                         onChange={e => updateKey('part3', qNum, null, e.target.value)}
-                                                        className="w-full border border-slate-300 rounded-lg p-2.5 outline-none focus:border-indigo-500 text-sm font-medium"
-                                                        placeholder="Nhập..."
+                                                        className="w-full border border-slate-300 rounded p-1.5 outline-none focus:border-indigo-500 text-[13px] font-bold text-slate-800"
+                                                        placeholder="Đáp án..."
                                                     />
                                                 </div>
                                             )
@@ -1017,22 +1036,22 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                             {/* Tabs (Pill style) */}
                             <div className="flex px-4 py-5 gap-2 bg-slate-50 overflow-x-auto hide-scrollbar border-b border-slate-200 shrink-0">
                                 {currentExam.part1Count > 0 && (
-                                    <button onClick={() => { setQuizActiveTab('p1'); setQuizActiveQ(1); }} className={`px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-wider whitespace-nowrap transition-all flex flex-col items-center gap-0.5 ${quizActiveTab === 'p1' ? 'bg-teal-500 text-white shadow-md shadow-teal-500/30' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}>
+                                    <button onClick={() => { setQuizActiveTab('p1'); setQuizActiveQ(0); }} className={`px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-wider whitespace-nowrap transition-all flex flex-col items-center gap-0.5 ${quizActiveTab === 'p1' ? 'bg-teal-500 text-white shadow-md shadow-teal-500/30' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}>
                                         <span>Trắc nghiệm</span><span className="text-[10px] opacity-80 font-medium">({currentExam.part1Count})</span>
                                     </button>
                                 )}
                                 {currentExam.part2Count > 0 && (
-                                    <button onClick={() => { setQuizActiveTab('p2'); setQuizActiveQ(1); }} className={`px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-wider whitespace-nowrap transition-all flex flex-col items-center gap-0.5 ${quizActiveTab === 'p2' ? 'bg-teal-500 text-white shadow-md shadow-teal-500/30' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}>
+                                    <button onClick={() => { setQuizActiveTab('p2'); setQuizActiveQ(0); }} className={`px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-wider whitespace-nowrap transition-all flex flex-col items-center gap-0.5 ${quizActiveTab === 'p2' ? 'bg-teal-500 text-white shadow-md shadow-teal-500/30' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}>
                                         <span>Đúng/Sai</span><span className="text-[10px] opacity-80 font-medium">({currentExam.part2Count})</span>
                                     </button>
                                 )}
                                 {currentExam.part3Count > 0 && (
-                                    <button onClick={() => { setQuizActiveTab('p3'); setQuizActiveQ(1); }} className={`px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-wider whitespace-nowrap transition-all flex flex-col items-center gap-0.5 ${quizActiveTab === 'p3' ? 'bg-teal-500 text-white shadow-md shadow-teal-500/30' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}>
+                                    <button onClick={() => { setQuizActiveTab('p3'); setQuizActiveQ(0); }} className={`px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-wider whitespace-nowrap transition-all flex flex-col items-center gap-0.5 ${quizActiveTab === 'p3' ? 'bg-teal-500 text-white shadow-md shadow-teal-500/30' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}>
                                         <span>TL Ngắn</span><span className="text-[10px] opacity-80 font-medium">({currentExam.part3Count})</span>
                                     </button>
                                 )}
                                 {currentExam.part4Count > 0 && (
-                                    <button onClick={() => { setQuizActiveTab('p4'); setQuizActiveQ(1); }} className={`px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-wider whitespace-nowrap transition-all flex flex-col items-center gap-0.5 ${quizActiveTab === 'p4' ? 'bg-teal-500 text-white shadow-md shadow-teal-500/30' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}>
+                                    <button onClick={() => { setQuizActiveTab('p4'); setQuizActiveQ(0); }} className={`px-5 py-2.5 rounded-full font-bold text-[11px] uppercase tracking-wider whitespace-nowrap transition-all flex flex-col items-center gap-0.5 ${quizActiveTab === 'p4' ? 'bg-teal-500 text-white shadow-md shadow-teal-500/30' : 'bg-white border border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-700'}`}>
                                         <span>Tự luận</span><span className="text-[10px] opacity-80 font-medium">({currentExam.part4Count})</span>
                                     </button>
                                 )}
@@ -1045,41 +1064,65 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                 </div>
 
                                 {/* Question Grid Navigator */}
-                                <div className="grid grid-cols-6 md:grid-cols-7 gap-3 mb-10">
+                                <div className="grid grid-cols-6 md:grid-cols-7 gap-y-6 gap-x-3 mb-10">
                                     {Array.from({ length: activeCount }).map((_, idx) => {
                                         const qNum = idx + 1;
                                         const isActive = quizActiveQ === qNum;
                                         const isAnswered = isQuestionAnswered(quizActiveTab, qNum);
+
+                                        if (isActive && quizActiveTab === 'p1') {
+                                            return (
+                                                <div key={`nav-${qNum}`} className="col-span-full sm:col-span-4 flex items-center bg-teal-50 p-1.5 rounded-full border-2 border-teal-500 shadow-[0_5px_15px_rgba(20,184,166,0.2)] animate-in zoom-in-95 origin-left">
+                                                    <div className="w-9 h-9 rounded-full bg-teal-500 text-white font-bold flex items-center justify-center shrink-0 shadow-inner">
+                                                        {qNum}
+                                                    </div>
+                                                    <div className="flex gap-1.5 px-3">
+                                                        {['A', 'B', 'C', 'D'].map(opt => (
+                                                            <button 
+                                                                key={opt}
+                                                                onClick={(e) => { e.stopPropagation(); updateAnsPart1(qNum, opt); quizNextQuestion(); }}
+                                                                className={`w-9 h-9 rounded-full font-bold text-sm transition-all flex items-center justify-center border-2 ${studentAnswers.part1[qNum] === opt ? 'bg-teal-600 text-white border-teal-600 shadow-md scale-110' : 'bg-white text-slate-600 border-slate-200 hover:bg-teal-50 hover:border-teal-300'}`}
+                                                            >
+                                                                {opt}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            );
+                                        }
+
                                         return (
-                                            <button
-                                                key={`nav-${qNum}`}
-                                                onClick={() => setQuizActiveQ(qNum)}
-                                                className={`w-10 h-10 rounded-full text-xs font-bold transition-all flex items-center justify-center ${isActive ? 'bg-teal-500 text-white shadow-[0_0_15px_rgba(20,184,166,0.5)] scale-110 z-10' :
-                                                    isAnswered ? 'bg-teal-50 text-teal-700 border-2 border-teal-200' :
-                                                        'bg-white border border-slate-200 text-slate-500 hover:bg-slate-100'
-                                                    }`}
-                                            >
-                                                {qNum}
-                                            </button>
+                                            <div key={`nav-${qNum}`} className="flex justify-center">
+                                                <button
+                                                    onClick={() => setQuizActiveQ(isActive ? 0 : qNum)}
+                                                    className={`w-10 h-10 rounded-full text-xs font-bold transition-all flex items-center justify-center ${isActive ? 'bg-teal-500 text-white shadow-[0_0_15px_rgba(20,184,166,0.5)] z-20 scale-110' :
+                                                        isAnswered ? 'bg-teal-50 text-teal-700 border-2 border-teal-200' :
+                                                            'bg-white border border-slate-200 text-slate-500 hover:bg-slate-100'
+                                                        }`}
+                                                >
+                                                    {isAnswered && quizActiveTab === 'p1' ? (
+                                                        <div className="flex flex-col items-center mt-0.5">
+                                                            <span className="text-[9px] opacity-60 leading-none">{qNum}</span>
+                                                            <span className="text-[14px] leading-none mt-0.5">{studentAnswers.part1[qNum]}</span>
+                                                        </div>
+                                                    ) : (
+                                                        qNum
+                                                    )}
+                                                </button>
+                                            </div>
                                         )
                                     })}
                                 </div>
 
                                 {/* Single Question Detail */}
-                                <div className="flex-1 flex flex-col border-t border-slate-200 pt-6">
-                                    <h3 className="text-xl font-bold text-slate-800 mb-1">Câu hỏi {quizActiveQ}</h3>
-                                    <p className="text-slate-500 text-sm mb-6">
-                                        {quizActiveTab === 'p1' && 'Trắc nghiệm 1 lựa chọn'}
-                                        {quizActiveTab === 'p2' && 'Trắc nghiệm đúng/sai (4 ý)'}
-                                        {quizActiveTab === 'p3' && 'Điền đáp án ngắn'}
-                                        {quizActiveTab === 'p4' && 'Tải ảnh bài làm'}
-                                    </p>
-
-                                    {quizActiveTab === 'p1' && (
-                                        <div className="flex gap-4 justify-center">
-                                            {['A', 'B', 'C', 'D'].map(opt => renderQuizOptBtn(studentAnswers.part1[quizActiveQ] === opt, opt, () => updateAnsPart1(quizActiveQ, opt)))}
-                                        </div>
-                                    )}
+                                {quizActiveTab !== 'p1' && quizActiveQ > 0 && (
+                                    <div className="flex-1 flex flex-col border-t border-slate-200 pt-6">
+                                        <h3 className="text-xl font-bold text-slate-800 mb-1">Câu hỏi {quizActiveQ}</h3>
+                                        <p className="text-slate-500 text-sm mb-6">
+                                            {quizActiveTab === 'p2' && 'Trắc nghiệm đúng/sai (4 ý)'}
+                                            {quizActiveTab === 'p3' && 'Điền đáp án ngắn'}
+                                            {quizActiveTab === 'p4' && 'Tải ảnh bài làm'}
+                                        </p>
 
                                     {quizActiveTab === 'p2' && (
                                         <div className="space-y-4">
@@ -1129,7 +1172,8 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                             )}
                                         </div>
                                     )}
-                                </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Footer Navigation */}
