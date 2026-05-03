@@ -1122,6 +1122,33 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                             );
                                         }
 
+                                        if (isActive && quizActiveTab === 'p3') {
+                                            return (
+                                                <div key={`nav-${qNum}`} className="col-span-full sm:col-span-5 flex flex-col sm:flex-row items-center bg-teal-50 p-2 rounded-2xl border-2 border-teal-500 shadow-[0_5px_15px_rgba(20,184,166,0.2)] animate-in zoom-in-95 origin-left gap-3">
+                                                    <div className="flex items-center gap-2 self-start sm:self-center w-full sm:w-auto">
+                                                        <div className="w-9 h-9 rounded-full bg-teal-500 text-white font-bold flex items-center justify-center shrink-0 shadow-inner">
+                                                            {qNum}
+                                                        </div>
+                                                        <span className="sm:hidden font-bold text-teal-700 text-sm">Câu {qNum}</span>
+                                                        <button onClick={(e) => { e.stopPropagation(); setQuizActiveQ(0); }} className="sm:hidden ml-auto w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center hover:bg-teal-200"><span className="material-symbols-outlined text-[16px]">close</span></button>
+                                                    </div>
+
+                                                    <div className="flex-1 w-full sm:w-auto px-1">
+                                                        <input
+                                                            autoFocus
+                                                            type="text"
+                                                            value={studentAnswers.part3[qNum] || ''}
+                                                            onChange={e => updateAnsPart3(qNum, e.target.value)}
+                                                            placeholder="Nhập đáp án ngắn..."
+                                                            className="w-full px-4 py-2 border-2 border-teal-200 rounded-xl focus:border-teal-500 outline-none font-bold text-slate-700 bg-white shadow-inner transition-colors"
+                                                        />
+                                                    </div>
+
+                                                    <button onClick={(e) => { e.stopPropagation(); setQuizActiveQ(0); }} className="hidden sm:flex ml-auto w-10 h-10 shrink-0 rounded-full bg-teal-500 text-white items-center justify-center hover:bg-teal-600 shadow-md transition-transform active:scale-95"><span className="material-symbols-outlined text-[20px]">check</span></button>
+                                                </div>
+                                            );
+                                        }
+
                                         return (
                                             <div key={`nav-${qNum}`} className="flex justify-center">
                                                 <button
@@ -1146,6 +1173,11 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                                                 })}
                                                             </span>
                                                         </div>
+                                                    ) : isAnswered && quizActiveTab === 'p3' ? (
+                                                        <div className="flex flex-col items-center mt-0.5 max-w-[32px] overflow-hidden px-1">
+                                                            <span className="text-[9px] opacity-60 leading-none mb-0.5">{qNum}</span>
+                                                            <span className="text-[10px] font-medium truncate w-full text-center leading-tight" title={studentAnswers.part3[qNum]}>{studentAnswers.part3[qNum]}</span>
+                                                        </div>
                                                     ) : (
                                                         qNum
                                                     )}
@@ -1156,25 +1188,12 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                 </div>
 
                                 {/* Single Question Detail */}
-                                {quizActiveTab !== 'p1' && quizActiveTab !== 'p2' && quizActiveQ > 0 && (
+                                {quizActiveTab === 'p4' && quizActiveQ > 0 && (
                                     <div className="flex-1 flex flex-col border-t border-slate-200 pt-6">
                                         <h3 className="text-xl font-bold text-slate-800 mb-1">Câu hỏi {quizActiveQ}</h3>
                                         <p className="text-slate-500 text-sm mb-6">
-                                            {quizActiveTab === 'p3' && 'Điền đáp án ngắn'}
                                             {quizActiveTab === 'p4' && 'Tải ảnh bài làm'}
                                         </p>
-
-                                    {quizActiveTab === 'p3' && (
-                                        <div>
-                                            <input
-                                                type="text"
-                                                value={studentAnswers.part3[quizActiveQ] || ''}
-                                                onChange={e => updateAnsPart3(quizActiveQ, e.target.value)}
-                                                placeholder="Nhập đáp án của bạn..."
-                                                className="w-full px-5 py-4 border-2 border-slate-200 rounded-2xl focus:border-teal-500 outline-none font-bold text-xl text-slate-700 bg-white shadow-inner transition-colors"
-                                            />
-                                        </div>
-                                    )}
 
                                     {quizActiveTab === 'p4' && (
                                         <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col items-center">
