@@ -1080,7 +1080,7 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                                         {['A', 'B', 'C', 'D'].map(opt => (
                                                             <button 
                                                                 key={opt}
-                                                                onClick={(e) => { e.stopPropagation(); updateAnsPart1(qNum, opt); quizNextQuestion(); }}
+                                                                onClick={(e) => { e.stopPropagation(); updateAnsPart1(qNum, opt); setQuizActiveQ(0); }}
                                                                 className={`w-9 h-9 rounded-full font-bold text-sm transition-all flex items-center justify-center border-2 ${studentAnswers.part1[qNum] === opt ? 'bg-teal-600 text-white border-teal-600 shadow-md scale-110' : 'bg-white text-slate-600 border-slate-200 hover:bg-teal-50 hover:border-teal-300'}`}
                                                             >
                                                                 {opt}
