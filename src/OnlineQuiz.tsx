@@ -1091,6 +1091,37 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                             );
                                         }
 
+                                        if (isActive && quizActiveTab === 'p2') {
+                                            return (
+                                                <div key={`nav-${qNum}`} className="col-span-full xl:col-span-6 flex flex-col xl:flex-row items-center bg-teal-50 p-2 rounded-2xl border-2 border-teal-500 shadow-[0_5px_15px_rgba(20,184,166,0.2)] animate-in zoom-in-95 origin-left gap-3">
+                                                    <div className="flex items-center gap-2 self-start xl:self-center w-full xl:w-auto">
+                                                        <div className="w-9 h-9 rounded-full bg-teal-500 text-white font-bold flex items-center justify-center shrink-0 shadow-inner">
+                                                            {qNum}
+                                                        </div>
+                                                        <span className="xl:hidden font-bold text-teal-700 text-sm">Câu {qNum}</span>
+                                                        <button onClick={(e) => { e.stopPropagation(); setQuizActiveQ(0); }} className="xl:hidden ml-auto w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center hover:bg-teal-200"><span className="material-symbols-outlined text-[16px]">close</span></button>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full xl:w-auto flex-1">
+                                                        {(['a', 'b', 'c', 'd'] as const).map(sub => {
+                                                            const val = studentAnswers.part2[qNum]?.[sub];
+                                                            return (
+                                                                <div key={sub} className="flex flex-col items-center gap-1.5 bg-white p-2 rounded-xl border border-teal-100 shadow-sm">
+                                                                    <span className="font-black text-slate-400 text-xs uppercase">{sub})</span>
+                                                                    <div className="flex gap-1.5">
+                                                                        <button onClick={(e) => { e.stopPropagation(); updateAnsPart2(qNum, sub, true); }} className={`w-8 h-8 rounded font-bold text-[10px] transition-all border ${val === true ? 'bg-emerald-500 border-emerald-500 text-white shadow-md scale-105' : 'bg-slate-50 border-slate-200 text-slate-400 hover:border-emerald-300 hover:text-emerald-500 hover:bg-emerald-50'}`}>Đ</button>
+                                                                        <button onClick={(e) => { e.stopPropagation(); updateAnsPart2(qNum, sub, false); }} className={`w-8 h-8 rounded font-bold text-[10px] transition-all border ${val === false ? 'bg-rose-500 border-rose-500 text-white shadow-md scale-105' : 'bg-slate-50 border-slate-200 text-slate-400 hover:border-rose-300 hover:text-rose-500 hover:bg-rose-50'}`}>S</button>
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
+
+                                                    <button onClick={(e) => { e.stopPropagation(); setQuizActiveQ(0); }} className="hidden xl:flex ml-auto w-10 h-10 rounded-full bg-teal-500 text-white items-center justify-center hover:bg-teal-600 shadow-md transition-transform active:scale-95"><span className="material-symbols-outlined text-[20px]">check</span></button>
+                                                </div>
+                                            );
+                                        }
+
                                         return (
                                             <div key={`nav-${qNum}`} className="flex justify-center">
                                                 <button
@@ -1105,6 +1136,16 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                                             <span className="text-[9px] opacity-60 leading-none">{qNum}</span>
                                                             <span className="text-[14px] leading-none mt-0.5">{studentAnswers.part1[qNum]}</span>
                                                         </div>
+                                                    ) : isAnswered && quizActiveTab === 'p2' ? (
+                                                        <div className="flex flex-col items-center mt-0.5">
+                                                            <span className="text-[9px] opacity-60 leading-none">{qNum}</span>
+                                                            <span className="flex gap-[3px] mt-1">
+                                                                {(['a', 'b', 'c', 'd'] as const).map(sub => {
+                                                                    const val = studentAnswers.part2[qNum]?.[sub];
+                                                                    return <span key={sub} className={`w-1.5 h-1.5 rounded-full ${val === true ? 'bg-emerald-500' : val === false ? 'bg-rose-500' : 'bg-slate-200'}`} />
+                                                                })}
+                                                            </span>
+                                                        </div>
                                                     ) : (
                                                         qNum
                                                     )}
@@ -1115,31 +1156,13 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                 </div>
 
                                 {/* Single Question Detail */}
-                                {quizActiveTab !== 'p1' && quizActiveQ > 0 && (
+                                {quizActiveTab !== 'p1' && quizActiveTab !== 'p2' && quizActiveQ > 0 && (
                                     <div className="flex-1 flex flex-col border-t border-slate-200 pt-6">
                                         <h3 className="text-xl font-bold text-slate-800 mb-1">Câu hỏi {quizActiveQ}</h3>
                                         <p className="text-slate-500 text-sm mb-6">
-                                            {quizActiveTab === 'p2' && 'Trắc nghiệm đúng/sai (4 ý)'}
                                             {quizActiveTab === 'p3' && 'Điền đáp án ngắn'}
                                             {quizActiveTab === 'p4' && 'Tải ảnh bài làm'}
                                         </p>
-
-                                    {quizActiveTab === 'p2' && (
-                                        <div className="space-y-4">
-                                            {(['a', 'b', 'c', 'd'] as const).map(sub => {
-                                                const val = studentAnswers.part2[quizActiveQ]?.[sub];
-                                                return (
-                                                    <div key={sub} className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm hover:border-teal-200 transition-colors">
-                                                        <span className="font-black text-slate-400 text-2xl uppercase w-10 text-center">{sub}</span>
-                                                        <div className="flex gap-3">
-                                                            <button onClick={() => updateAnsPart2(quizActiveQ, sub, true)} className={`w-20 h-12 rounded-xl font-bold text-sm tracking-wider transition-all border-2 ${val === true ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/30 scale-105' : 'bg-white border-slate-200 text-slate-400 hover:border-emerald-400 hover:text-emerald-500 hover:bg-emerald-50'}`}>ĐÚNG</button>
-                                                            <button onClick={() => updateAnsPart2(quizActiveQ, sub, false)} className={`w-20 h-12 rounded-xl font-bold text-sm tracking-wider transition-all border-2 ${val === false ? 'bg-rose-500 border-rose-500 text-white shadow-lg shadow-rose-500/30 scale-105' : 'bg-white border-slate-200 text-slate-400 hover:border-rose-400 hover:text-rose-500 hover:bg-rose-50'}`}>SAI</button>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    )}
 
                                     {quizActiveTab === 'p3' && (
                                         <div>
