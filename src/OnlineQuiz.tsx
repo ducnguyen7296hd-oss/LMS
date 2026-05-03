@@ -1107,7 +1107,7 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                                             const val = studentAnswers.part2[qNum]?.[sub];
                                                             return (
                                                                 <div key={sub} className="flex flex-col items-center gap-1.5 bg-white p-2 rounded-xl border border-teal-100 shadow-sm">
-                                                                    <span className="font-black text-slate-400 text-xs uppercase">{sub})</span>
+                                                                    <span className="font-black text-slate-400 text-xs">{sub})</span>
                                                                     <div className="flex gap-1.5">
                                                                         <button onClick={(e) => { e.stopPropagation(); updateAnsPart2(qNum, sub, true); }} className={`w-8 h-8 rounded font-bold text-[10px] transition-all border ${val === true ? 'bg-emerald-500 border-emerald-500 text-white shadow-md scale-105' : 'bg-slate-50 border-slate-200 text-slate-400 hover:border-emerald-300 hover:text-emerald-500 hover:bg-emerald-50'}`}>Đ</button>
                                                                         <button onClick={(e) => { e.stopPropagation(); updateAnsPart2(qNum, sub, false); }} className={`w-8 h-8 rounded font-bold text-[10px] transition-all border ${val === false ? 'bg-rose-500 border-rose-500 text-white shadow-md scale-105' : 'bg-slate-50 border-slate-200 text-slate-400 hover:border-rose-300 hover:text-rose-500 hover:bg-rose-50'}`}>S</button>
