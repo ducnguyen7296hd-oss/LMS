@@ -408,11 +408,11 @@ export default function StudentPortal({ user, onLogout }: StudentPortalProps) {
                         <div className="w-2 h-6 bg-teal-500 rounded-full mr-3"></div>
                         <h1 className="font-black text-lg text-slate-800 tracking-tight">{currentExam.examName}</h1>
                     </div>
-                    <div style={{ flex: 1, margin: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column', background: 'white', borderRadius: 12, minHeight: 0 }}>
+                    <div style={{ flex: 1, margin: '8px', overflow: 'hidden', background: 'white', borderRadius: 12 }}>
                         {studentVersion?.pdfUrl ? (
-                            <CustomPdfViewer url={studentVersion.pdfUrl} />
+                            <CustomPdfViewer url={studentVersion.pdfUrl} heightOffset={120} />
                         ) : (
-                            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
+                            <div style={{ height: 'calc(100vh - 160px)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b' }}>
                                 <div style={{ textAlign: 'center' }}>
                                     <span className="material-symbols-outlined" style={{ fontSize: 48, marginBottom: 12, opacity: 0.3 }}>picture_as_pdf</span>
                                     <p style={{ fontWeight: 700 }}>Chưa tải tệp PDF đề thi</p>
@@ -695,7 +695,20 @@ export default function StudentPortal({ user, onLogout }: StudentPortalProps) {
                     </div>
 
                     <div className="mt-8 flex justify-center gap-4">
-                        <button onClick={() => setState('DASHBOARD')} className="bg-slate-900 hover:bg-black text-white px-8 py-3 rounded-xl font-bold transition-colors">
+                        <button 
+                            onClick={() => {
+                                setState('DASHBOARD');
+                                setCurrentExam(null);
+                                setCurrentVersionId(null);
+                                setStudentAnswers({ part1: {}, part2: {}, part3: {}, part4: {} });
+                                setQuizActiveTab('p1');
+                                setQuizActiveQ(null);
+                                setQuizTimeLeft(0);
+                                setCheatWarnings(0);
+                                setIsExamViolated(false);
+                            }} 
+                            className="bg-slate-900 hover:bg-black text-white px-8 py-3 rounded-xl font-bold transition-colors"
+                        >
                             Về trang Chủ
                         </button>
                     </div>
@@ -704,5 +717,13 @@ export default function StudentPortal({ user, onLogout }: StudentPortalProps) {
         );
     }
 
-    return null;
+    return (
+        <div className="flex items-center justify-center min-h-screen text-slate-500 bg-slate-50">
+            <div className="text-center">
+                <span className="material-symbols-outlined text-4xl mb-2 text-slate-400">error_outline</span>
+                <p className="font-bold">Đã xảy ra lỗi hiển thị (Trạng thái không hợp lệ: {state}).</p>
+                <button onClick={() => setState('DASHBOARD')} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700">Quay lại Dashboard</button>
+            </div>
+        </div>
+    );
 }

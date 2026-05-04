@@ -72,6 +72,7 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
     const [studentAnswers, setStudentAnswers] = useState<Answers>({ part1: {}, part2: {}, part3: {}, part4: {} });
     const [isUploadingPdf, setIsUploadingPdf] = useState(false);
     const [isSyncingExams, setIsSyncingExams] = useState(false);
+    const [confirmSubmit, setConfirmSubmit] = useState(false);
 
     interface ExamResult {
         studentId: string;
@@ -382,7 +383,7 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
             alert('Bài thi phải có ít nhất 1 mã đề!');
             return;
         }
-        
+
         setExams(prev => prev.map(ex => {
             if (ex.internalId !== currentExam.internalId) return ex;
             const newVersions = ex.versions.filter(v => v.id !== versionId);
@@ -408,6 +409,7 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
 
         setCurrentStudentVersionId(randomVersion.id);
         setStudentAnswers({ part1: {}, part2: {}, part3: {}, part4: {} });
+        setConfirmSubmit(false);
 
         let startPart: 'p1' | 'p2' | 'p3' | 'p4' = 'p1';
         if (currentExam.part1Count > 0) startPart = 'p1';
@@ -726,8 +728,8 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                         /* --- BẮT ĐẦU CỘT PHẢI (FORM SETUP) --- */
                         <div className="w-full h-full bg-white flex flex-col z-10">
                             {/* Header */}
-                            <div className="px-6 py-5 flex items-center justify-between border-b border-slate-200 bg-white shrink-0">
-                                <div className="flex items-center gap-6">
+                            <div className="px-6 py-5 flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 bg-white shrink-0">
+                                <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                                     <div className="flex items-center gap-3 text-indigo-700">
                                         <span className="material-symbols-outlined font-bold text-2xl">key</span>
                                         <h2 className="font-bold text-xl tracking-tight hidden xl:block">Cấu hình</h2>
@@ -789,7 +791,7 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
 
                             <div className="flex-1 overflow-y-auto p-8 bg-slate-50/50">
                                 {/* Tabs */}
-                                <div className="flex gap-8 border-b border-slate-200 mb-8 px-2">
+                                <div className="flex flex-wrap gap-8 border-b border-slate-200 mb-8 px-2">
                                     {currentExam.part1Count > 0 && <button onClick={() => setActiveTab('p1')} className={`pb-3 font-bold text-sm transition-colors ${activeTab === 'p1' ? 'text-indigo-700 border-b-2 border-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}>Phần I (1-{currentExam.part1Count})</button>}
                                     {currentExam.part2Count > 0 && <button onClick={() => setActiveTab('p2')} className={`pb-3 font-bold text-sm transition-colors ${activeTab === 'p2' ? 'text-indigo-700 border-b-2 border-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}>Phần II (Đ/S)</button>}
                                     {currentExam.part3Count > 0 && <button onClick={() => setActiveTab('p3')} className={`pb-3 font-bold text-sm transition-colors ${activeTab === 'p3' ? 'text-indigo-700 border-b-2 border-indigo-700' : 'text-slate-500 hover:text-slate-700'}`}>Phần III (Số)</button>}
@@ -814,8 +816,8 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                         <input type="number" step="0.05" value={currentExam.part3Points} onChange={e => updateExamField(currentExam.internalId, 'part3Points', Number(e.target.value))} className="w-14 border border-slate-300 rounded p-1 text-center font-bold text-indigo-700 outline-none text-sm" />
                                         <span className="text-xs text-slate-400 font-bold">đ</span>
                                     </div>
-                                    
-                                    <div className="ml-auto flex items-center gap-3">
+
+                                    <div className="ml-auto flex flex-wrap items-center gap-3 mt-2 sm:mt-0">
                                         <details className="relative text-sm text-slate-500 cursor-pointer group">
                                             <summary className="font-bold flex items-center gap-1 hover:text-indigo-600 outline-none select-none">
                                                 <span className="material-symbols-outlined text-[18px]">info</span> Hướng dẫn
@@ -836,12 +838,12 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                 {/* ================= TAB CONTENTS ================= */}
                                 {activeTab === 'p1' && (
                                     <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                                        <div className="mb-5 flex items-center gap-3 bg-indigo-50 p-2.5 rounded-lg border border-indigo-100 shadow-inner">
+                                        <div className="mb-5 flex flex-wrap items-center gap-3 bg-indigo-50 p-2.5 rounded-lg border border-indigo-100 shadow-inner">
                                             <span className="material-symbols-outlined text-indigo-600 ml-1">keyboard</span>
                                             <span className="text-[13px] font-bold text-indigo-900 whitespace-nowrap">Nhập nhanh:</span>
-                                            <input 
-                                                type="text" 
-                                                placeholder="VD gõ: ABCDABCD..." 
+                                            <input
+                                                type="text"
+                                                placeholder="VD gõ: ABCDABCD..."
                                                 className="flex-1 border border-indigo-200 rounded-md px-3 py-1.5 outline-none focus:border-indigo-500 font-mono tracking-[0.25em] uppercase text-sm font-bold text-slate-800 bg-white"
                                                 onChange={(e) => {
                                                     const clean = e.target.value.toUpperCase().replace(/[^A-D]/g, '');
@@ -853,10 +855,10 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                                     const newKey = { ...activeVersion?.answerKey, part1: newPart1 };
                                                     setExams(prev => prev.map(ex => ex.internalId === currentExamId ? { ...ex, versions: ex.versions.map(v => v.id === activeVersion?.id ? { ...v, answerKey: newKey as AnswerKey } : v) } : ex));
                                                 }}
-                                                value={Array.from({length: currentExam.part1Count}).map((_, i) => activeVersion?.answerKey.part1[i+1] || '').join('')}
+                                                value={Array.from({ length: currentExam.part1Count }).map((_, i) => activeVersion?.answerKey.part1[i + 1] || '').join('')}
                                             />
                                         </div>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-6">
+                                        <div className="grid gap-y-4 gap-x-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
                                             {Array.from({ length: currentExam.part1Count }).map((_, idx) => {
                                                 const qNum = idx + 1;
                                                 const selected = activeVersion?.answerKey.part1[qNum];
@@ -886,7 +888,7 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
 
                                 {activeTab === 'p2' && (
                                     <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                                        <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
                                             {Array.from({ length: currentExam.part2Count }).map((_, idx) => {
                                                 const qNum = idx + 1;
                                                 const keyObj = activeVersion?.answerKey.part2[qNum] || {};
@@ -917,7 +919,7 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                 )}
 
                                 {activeTab === 'p3' && (
-                                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                                    <div className="grid gap-3 bg-white p-5 rounded-xl border border-slate-200 shadow-sm" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
                                         {Array.from({ length: currentExam.part3Count }).map((_, idx) => {
                                             const qNum = idx + 1;
                                             return (
@@ -937,7 +939,7 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                 )}
 
                                 {activeTab === 'p4' && (
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
                                         {Array.from({ length: currentExam.part4Count }).map((_, idx) => {
                                             const qNum = idx + 1;
                                             return (
@@ -1064,7 +1066,7 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                 </div>
 
                                 {/* Question Grid Navigator */}
-                                <div className="grid grid-cols-6 md:grid-cols-7 gap-y-6 gap-x-3 mb-10">
+                                <div className="grid gap-y-6 gap-x-3 mb-10" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(45px, 1fr))' }}>
                                     {Array.from({ length: activeCount }).map((_, idx) => {
                                         const qNum = idx + 1;
                                         const isActive = quizActiveQ === qNum;
@@ -1072,13 +1074,13 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
 
                                         if (isActive && quizActiveTab === 'p1') {
                                             return (
-                                                <div key={`nav-${qNum}`} className="col-span-full sm:col-span-4 flex items-center bg-teal-50 p-1.5 rounded-full border-2 border-teal-500 shadow-[0_5px_15px_rgba(20,184,166,0.2)] animate-in zoom-in-95 origin-left">
+                                                <div key={`nav-${qNum}`} className="col-span-full flex flex-wrap items-center bg-teal-50 p-1.5 rounded-3xl border-2 border-teal-500 shadow-[0_5px_15px_rgba(20,184,166,0.2)] animate-in zoom-in-95 origin-left gap-1">
                                                     <div className="w-9 h-9 rounded-full bg-teal-500 text-white font-bold flex items-center justify-center shrink-0 shadow-inner">
                                                         {qNum}
                                                     </div>
                                                     <div className="flex gap-1.5 px-3">
                                                         {['A', 'B', 'C', 'D'].map(opt => (
-                                                            <button 
+                                                            <button
                                                                 key={opt}
                                                                 onClick={(e) => { e.stopPropagation(); updateAnsPart1(qNum, opt); setQuizActiveQ(0); }}
                                                                 className={`w-9 h-9 rounded-full font-bold text-sm transition-all flex items-center justify-center border-2 ${studentAnswers.part1[qNum] === opt ? 'bg-teal-600 text-white border-teal-600 shadow-md scale-110' : 'bg-white text-slate-600 border-slate-200 hover:bg-teal-50 hover:border-teal-300'}`}
@@ -1093,7 +1095,7 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
 
                                         if (isActive && quizActiveTab === 'p2') {
                                             return (
-                                                <div key={`nav-${qNum}`} className="col-span-full xl:col-span-6 flex flex-col xl:flex-row items-center bg-teal-50 p-2 rounded-2xl border-2 border-teal-500 shadow-[0_5px_15px_rgba(20,184,166,0.2)] animate-in zoom-in-95 origin-left gap-3">
+                                                <div key={`nav-${qNum}`} className="col-span-full flex flex-col xl:flex-row items-center bg-teal-50 p-2 rounded-2xl border-2 border-teal-500 shadow-[0_5px_15px_rgba(20,184,166,0.2)] animate-in zoom-in-95 origin-left gap-3">
                                                     <div className="flex items-center gap-2 self-start xl:self-center w-full xl:w-auto">
                                                         <div className="w-9 h-9 rounded-full bg-teal-500 text-white font-bold flex items-center justify-center shrink-0 shadow-inner">
                                                             {qNum}
@@ -1124,7 +1126,7 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
 
                                         if (isActive && quizActiveTab === 'p3') {
                                             return (
-                                                <div key={`nav-${qNum}`} className="col-span-full sm:col-span-5 flex flex-col sm:flex-row items-center bg-teal-50 p-2 rounded-2xl border-2 border-teal-500 shadow-[0_5px_15px_rgba(20,184,166,0.2)] animate-in zoom-in-95 origin-left gap-3">
+                                                <div key={`nav-${qNum}`} className="col-span-full flex flex-col sm:flex-row items-center bg-teal-50 p-2 rounded-2xl border-2 border-teal-500 shadow-[0_5px_15px_rgba(20,184,166,0.2)] animate-in zoom-in-95 origin-left gap-3">
                                                     <div className="flex items-center gap-2 self-start sm:self-center w-full sm:w-auto">
                                                         <div className="w-9 h-9 rounded-full bg-teal-500 text-white font-bold flex items-center justify-center shrink-0 shadow-inner">
                                                             {qNum}
@@ -1195,25 +1197,25 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                             {quizActiveTab === 'p4' && 'Tải ảnh bài làm'}
                                         </p>
 
-                                    {quizActiveTab === 'p4' && (
-                                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col items-center">
-                                            <label className="cursor-pointer bg-white text-indigo-700 px-6 py-3 rounded-xl border-2 border-dashed border-indigo-300 hover:bg-indigo-50 font-bold flex items-center gap-2 mb-4 w-full justify-center transition-colors">
-                                                <span className="material-symbols-outlined">add_a_photo</span> Tải ảnh lên
-                                                <input type="file" accept="image/*" multiple onChange={e => updateAnsPart4(quizActiveQ, e)} className="hidden" />
-                                            </label>
+                                        {quizActiveTab === 'p4' && (
+                                            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col items-center">
+                                                <label className="cursor-pointer bg-white text-indigo-700 px-6 py-3 rounded-xl border-2 border-dashed border-indigo-300 hover:bg-indigo-50 font-bold flex items-center gap-2 mb-4 w-full justify-center transition-colors">
+                                                    <span className="material-symbols-outlined">add_a_photo</span> Tải ảnh lên
+                                                    <input type="file" accept="image/*" multiple onChange={e => updateAnsPart4(quizActiveQ, e)} className="hidden" />
+                                                </label>
 
-                                            {(studentAnswers.part4[quizActiveQ] || []).length > 0 && (
-                                                <div className="grid grid-cols-2 gap-2 w-full">
-                                                    {(studentAnswers.part4[quizActiveQ] || []).map((url, iIndex) => (
-                                                        <div key={iIndex} className="relative group rounded-lg overflow-hidden border border-slate-200 aspect-[3/4] bg-white">
-                                                            <img src={url} className="w-full h-full object-cover" />
-                                                            <button onClick={() => removePart4Image(quizActiveQ, iIndex)} className="absolute top-1 right-1 bg-black/60 text-white w-6 h-6 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-600"><span className="material-symbols-outlined text-[16px]">close</span></button>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
+                                                {(studentAnswers.part4[quizActiveQ] || []).length > 0 && (
+                                                    <div className="grid grid-cols-2 gap-2 w-full">
+                                                        {(studentAnswers.part4[quizActiveQ] || []).map((url, iIndex) => (
+                                                            <div key={iIndex} className="relative group rounded-lg overflow-hidden border border-slate-200 aspect-[3/4] bg-white">
+                                                                <img src={url} className="w-full h-full object-cover" />
+                                                                <button onClick={() => removePart4Image(quizActiveQ, iIndex)} className="absolute top-1 right-1 bg-black/60 text-white w-6 h-6 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-600"><span className="material-symbols-outlined text-[16px]">close</span></button>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -1228,9 +1230,19 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                                         Tiếp <span className="material-symbols-outlined text-[20px]">east</span>
                                     </button>
                                 </div>
-                                <button onClick={() => { if (window.confirm('Bạn có chắc chắn muốn nộp bài?')) setState('RESULT'); }} className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white py-4 rounded-2xl font-black text-lg tracking-widest flex justify-center items-center gap-2 shadow-[0_10px_20px_rgba(20,184,166,0.3)] transition-all active:scale-95">
-                                    NỘP BÀI THI <span className="material-symbols-outlined">send</span>
-                                </button>
+                                {confirmSubmit ? (
+                                    <div className="flex flex-col gap-2 w-full">
+                                        <div className="text-sm font-bold text-slate-600 text-center mb-1">Xác nhận nộp bài?</div>
+                                        <div className="flex gap-2">
+                                            <button onClick={() => setConfirmSubmit(false)} className="flex-1 py-3 border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition-colors">Hủy</button>
+                                            <button onClick={() => { setConfirmSubmit(false); setState('RESULT'); }} className="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 rounded-2xl font-black tracking-wide transition-colors">Nộp</button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <button onClick={() => setConfirmSubmit(true)} className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white py-4 rounded-2xl font-black text-lg tracking-widest flex justify-center items-center gap-2 shadow-[0_10px_20px_rgba(20,184,166,0.3)] transition-all active:scale-95">
+                                        NỘP BÀI THI <span className="material-symbols-outlined">send</span>
+                                    </button>
+                                )}
                             </div>
 
                         </div>
@@ -1312,7 +1324,18 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
                     </div>
 
                     <div className="mt-8">
-                        <button onClick={() => setState('DASHBOARD')} className="bg-slate-900 hover:bg-black text-white px-8 py-3 rounded-xl font-bold transition-colors">
+                        <button
+                            onClick={() => {
+                                setState('DASHBOARD');
+                                setCurrentExamId(null);
+                                setCurrentStudentVersionId(null);
+                                setStudentAnswers({ part1: {}, part2: {}, part3: {}, part4: {} });
+                                setQuizActiveTab('p1');
+                                setQuizActiveQ(1);
+                                setQuizTimeLeft(0);
+                            }}
+                            className="bg-slate-900 hover:bg-black text-white px-8 py-3 rounded-xl font-bold transition-colors"
+                        >
                             Về trang Quản lý
                         </button>
                     </div>
@@ -1321,7 +1344,15 @@ const OnlineQuiz: React.FC<{ user: User }> = ({ user }) => {
         );
     }
 
-    return null;
+    return (
+        <div className="flex items-center justify-center min-h-screen text-slate-500 bg-slate-50 flex-1">
+            <div className="text-center">
+                <span className="material-symbols-outlined text-4xl mb-2 text-slate-400">error_outline</span>
+                <p className="font-bold">Đã xảy ra lỗi hiển thị (Trạng thái không hợp lệ: {state}).</p>
+                <button onClick={() => setState('DASHBOARD')} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700">Quay lại Dashboard</button>
+            </div>
+        </div>
+    );
 };
 
 export default OnlineQuiz;
